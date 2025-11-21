@@ -6,31 +6,35 @@ package Practical13;
 /// @param value stores a string value of the token then will be parsed later
 public record Token(TokenType type, String value) {
 
-    /// Enum types used to represent tokens
-    public enum TokenType {
-        Comparison,
-        Logical,
-        Numeric,
-        Boolean,
-    }
-
-    //NOTE: all values are readonly once set due to the redundant need for tokens to be changed
-
-    /// sets the token type these will be readonly as they should not need to be changed
-    /// after creation
-    public Token {
-    }
-
     /// Returns the type of the token
-    @Override
-    public TokenType type() {
+    public TokenType getType() {
         return type;
     }
 
-    /// Returns the opera
-    public String getOperator() {
+    /// Returns the value of the token as a string
+    public String getValue() {
         return value;
     }
+
+
+    /// returns a parsed value from the string value
+    /// if an invalid parse throws an error
+    public double getNum(){
+        if(type != TokenType.NUMERIC){ throw new
+                IllegalArgumentException("TokenType is not NUMERIC: " + type);}
+        //returned parsed value
+        return Double.parseDouble(value);
+    }
+
+    /// returns a boolean from string value
+    /// if invalid parse it throws an error
+    public boolean getBool(){
+        if(type != TokenType.LOGICAL){
+            throw new IllegalArgumentException("TokenType is not LOGICAL: " + type);
+        }
+        return Boolean.parseBoolean(value);
+    }
+
 
     /// Represents the string representation of a token
     /// Displays value of token and type
