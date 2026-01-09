@@ -1,56 +1,53 @@
 package Practical12;
 
 
-/// Class used to represent a module
-public class Module implements Comparable<Module>{
+// Class Record used to represent a module
+public class Module implements Comparable<Module> {
 
     //class attributes
-    //string variables
-    private String _moduleCode;
-    private String _moduleName;
-    private String _year;
-    //int variables
-    private int _credits;
-    private int _grade;
+    private final String moduleCode;
+    private final String moduleName;
+    private final Year year;
+    private final int credits;
+    private int grade;
+
+    //class constructor
+    public Module(String moduleCode, String moduleName, Year year, int credits, int grade)
+    {
+        this.moduleCode = moduleCode;
+        this.moduleName = moduleName;
+        this.year = year;
+        this.credits = credits;
+        this.grade = grade;
+    }
+
+    //getters
+    public String GetModuleCode() {return moduleCode;}
+    public String GetModuleName() {return moduleName;}
+    public Year GetYear() {return year;}
+    public int GetCredits() {return credits;}
+    public int GetGrade() {return grade;}
+
+    //setters
+    public void setGrade(int grade) {this.grade = grade;}
 
 
+    //to string representation
     @Override
-    public String toString(){
-        return String.format("Module Code:%s\n Module Name: %s\n Year:%s\n Credits:%d\n Grade:%d",
-                _moduleCode, _moduleName, _year,_credits,_grade);
+    public String toString() {
+        return String.format("Module Code:%s | Module Name: %s | Year:%s | Credits:%d | Grade:%d",
+                moduleCode, moduleName, year, credits, grade);
     }
 
     @Override
-    public int compareTo(Module o) {
-        return 0;
+    public int compareTo(Module other) {
+        //returns negative if less than
+        //positive if greater than
+        //0 for equal
+        int YearCompare = this.year.compareTo(other.year);
+        //doesn't check the credits because year is different
+        if (YearCompare != 0) return YearCompare;
+        //checks the credits highest to lowest
+        return Double.compare(other.grade, this.grade);
     }
-
-    // Getters and Setters
-
-    public String getModuleCode() {return _moduleCode;}
-
-    public void setModuleCode(String moduleCode) {this._moduleCode = moduleCode;}
-
-    public String getModuleName() {return _moduleName;}
-
-    public void setModuleName(String moduleName) {this._moduleName = moduleName;}
-
-    public String getYear() {return _year;}
-
-    public void setYear(String year) {this._year = year;}
-
-    public int getCredits() {return _credits;}
-
-    public void setCredits(int credits) {this._credits = credits;}
-
-    public int getGrade() {return _grade;}
-
-    public void setGrade(int grade) {this._grade = grade;}
-
-
-
-
-
-
-
 }

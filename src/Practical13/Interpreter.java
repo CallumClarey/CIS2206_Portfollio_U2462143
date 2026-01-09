@@ -6,12 +6,7 @@ import java.util.Stack;
 public class Interpreter {
 
     /// Internal stack used for processing input
-    private Stack<Token> stack = new Stack<>();
-
-    /// Function used to push tokens onto the stack
-    public void PushInternal(Token token) {
-        stack.push(token);
-    }
+    private final Stack<Token> stack = new Stack<>();
 
     /// Function called will begin the interpreter
     public void BeginInterpreter(List<Token> tokenList) {
@@ -29,7 +24,10 @@ public class Interpreter {
             //check the values in the list to add to the stack
             if(token.getType() == TokenType.NUMERIC || token.getType() == TokenType.BOOLEAN){
                 stack.push(token);
+                continue;
             }
+
+            stack.push(token);
 
             //performs a switch and checks the token type to see if an operation can be performed
             switch (token.getType()) {
@@ -41,13 +39,12 @@ public class Interpreter {
         }
     }
 
-
     /// Function used to the compared the values of two doubles
     public void ComparisonOperation(){
-        //check for the order error
-        if(!checkTokenType(TokenType.COMPARISON))return ;
+//        //check for the order error
+//        if(!checkTokenType(TokenType.COMPARISON))return ;
         //checks for the stack size error
-        if(!checkStackSize())return;
+        if(!checkStackSize()) return;
 
         //initial validation passed
         //pop the operation of the stack, time O(1)
@@ -57,14 +54,19 @@ public class Interpreter {
         //store the rhs and lhs values
         //pops achieved in O(1)
         var RHS = stack.pop().getNum();
+        System.out.println("RHS Popped: " + RHS);
         var LHS = stack.pop().getNum();
+        System.out.println("LHS Popped: " + LHS);
 
         //stores the value of the operation
         boolean result;
         switch (operation.getValue()){
-            case "<" -> { result = RHS < LHS;}
-            case ">" -> { result = RHS > LHS;}
-            default -> { System.out.println("Invalid Operation!!"); return; }
+            case "<" -> { result = LHS < RHS;}
+            case ">" -> { result = LHS > RHS;}
+            default -> {
+                System.out.println("Invalid Operation!!");
+                return;
+            }
         }
 
         //creates a new token and then pushes the token onto the stack
@@ -79,23 +81,37 @@ public class Interpreter {
 
     /// function used to perform logical operations on values in the stack
     public void LogicalOperation(){
-        //check for the order error
-        if(!checkTokenType(TokenType.LOGICAL))return ;
-        //checks for the stack size error
-        if(!checkStackSize())return;
-        //initial validation passed
+        //performs check to see whether the stack is valid
+        if(!checkStackSize()) return;
 
-        //initial validation passed
-        //pop the operation of the stack, time O(1)
-        //store the operation value
+        //pops values in time O(1)
         Token operation = stack.pop();
+        System.out.println("Logical Operation Popped: " + operation.getValue());
+        boolean RHS = stack.pop().getBool();
+        System.out.println("RHS Popped: " + RHS);
+        boolean LHS = stack.pop().getBool();
+        System.out.println("LHS Popped: " + LHS);
+        //output result of the operation
+        boolean result;
 
-        //store the rhs and lhs values
-        //pops achieved in O(1)
-        var RHS = stack.pop().getBool();
-        var LHS = stack.pop().getBool();
+        //switch on the value
+        switch (operation.getValue().toUpperCase()) {
+            case "AND" -> result = LHS && RHS;
+            case "OR"  -> result = LHS || RHS;
+            default -> {
+                System.out.println("Invalid logical operator: " + operation.getValue());
+                return;
+            }
+        }
+
+        //creates a result token and pushes it onto the stack
+        Token resultToken = new Token(TokenType.BOOLEAN, String.valueOf(result));
+        stack.push(resultToken);
+
+        //prints the stack and then prints the operation
+        System.out.println("Logical operation successful: " + LHS + " " + operation.getValue() + " " + RHS + " = " + result);
+        System.out.println("Stack now: " + stack);
     }
-
 
     //HELPER FUNCTIONS TO CLEAN UP CODE
 
@@ -104,6 +120,7 @@ public class Interpreter {
     private Boolean checkStackSize(){
         if(stack.size() < 3){
             System.out.println("Not enough tokens To compare, Stack Size: " + stack.size());
+            System.out.println("Stack:" + stack);
             return false;
         }
         else return true;
@@ -119,6 +136,18 @@ public class Interpreter {
         else return true;
     }
 
+    //helper functions for testing
+    public Token popStack() {
+        return stack.pop();
+    }
+
+    public boolean isStackEmpty() {
+        return stack.isEmpty();
+    }
+
+    public int getStackSize() {
+        return stack.size();
+    }
 
 
 

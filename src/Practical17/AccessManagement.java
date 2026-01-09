@@ -8,7 +8,7 @@ import java.util.Map;
 public class AccessManagement {
 
     //backing hashmap inside a hash map
-    private Map<User, Map<String,String>> UserPermMap;
+    private final Map<User, Map<String,String>> UserPermMap = new HashMap<>();
 
     /// Takes user as param and adds to the list so long as it is unique
     public Boolean AddUser(User user, String systemName, String permission){
@@ -45,11 +45,18 @@ public class AccessManagement {
 
     /// function used to update user values
     public Boolean UpdateUser(User user, String systemName, String permission){
+
+        //Time O(1) unless there is a collisions, resulting in worse case O(n)
         if(!UserPermMap.containsKey(user)){
             System.err.println("User does not exist: " + user.getName());
             return false;
         }
 
+        //gets the nested map
+        Map<String,String> SystemNameMap = UserPermMap.get(user);
+        //This changes the permission on the map
+        SystemNameMap.put(systemName, permission);
+        UserPermMap.put(user, SystemNameMap);
         return true;
     }
 

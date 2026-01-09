@@ -29,8 +29,8 @@ public record Token(TokenType type, String value) {
     /// returns a boolean from string value
     /// if invalid parse it throws an error
     public boolean getBool(){
-        if(type != TokenType.LOGICAL){
-            throw new IllegalArgumentException("TokenType is not LOGICAL: " + type);
+        if(type != TokenType.BOOLEAN){
+            System.out.println("TokenType is not LOGICAL: " + type);
         }
         return Boolean.parseBoolean(value);
     }
